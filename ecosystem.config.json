@@ -1,0 +1,56 @@
+{
+  "apps": [
+    {
+      "name": "primavera-mcp-server-stdio",
+      "script": "mcpServer.js",
+      "instances": 1,
+      "exec_mode": "fork",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "log_file": "./logs/primavera-mcp-stdio.log",
+      "error_file": "./logs/primavera-mcp-stdio.error.log",
+      "out_file": "./logs/primavera-mcp-stdio.out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "restart_delay": 3000,
+      "max_restarts": 10,
+      "min_uptime": "10s"
+    },
+    {
+      "name": "primavera-mcp-server-http",
+      "script": "mcpServer.js",
+      "args": ["--streamable-http"],
+      "instances": 1,
+      "exec_mode": "fork",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3001
+      },
+      "log_file": "./logs/primavera-mcp-http.log",
+      "error_file": "./logs/primavera-mcp-http.error.log",
+      "out_file": "./logs/primavera-mcp-http.out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "restart_delay": 3000,
+      "max_restarts": 10,
+      "min_uptime": "10s"
+    },
+    {
+      "name": "primavera-mcp-server-sse",
+      "script": "mcpServer.js",
+      "args": ["--sse"],
+      "instances": 1,
+      "exec_mode": "fork",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3002
+      },
+      "log_file": "./logs/primavera-mcp-sse.log",
+      "error_file": "./logs/primavera-mcp-sse.error.log",
+      "out_file": "./logs/primavera-mcp-sse.out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "restart_delay": 3000,
+      "max_restarts": 10,
+      "min_uptime": "10s"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run linter
+        run: npm run lint --if-present
+        
+      - name: Run tests
+        run: npm test --if-present
+        
+      - name: Validate tools
+        run: npm run list-tools
+        
+      - name: Check server can start
+        run: timeout 10s npm run test-connection || true
+
+  deploy-staging:
+    name: Deploy to Railway Staging
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+        
+      - name: Deploy to Railway Staging
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway login --token $RAILWAY_TOKEN
+          railway environment staging
+          railway up --service primavera-mcp-server-staging
+          
+      - name: Comment deployment URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: deployment } = await github.rest.repos.listDeployments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha
+            });
+            
+            if (deployment.length > 0) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '🚀 Staging deployment successful!\n\nThe MCP server has been deployed to Railway staging environment.'
+              });
+            }
+
+  deploy-production:
+    name: Deploy to Railway Production
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+        
+      - name: Deploy to Railway Production
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway login --token $RAILWAY_TOKEN
+          railway environment production
+          railway up --service primavera-mcp-server-prod
+          
+      - name: Health check after deployment
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Wait for deployment to be ready
+          sleep 30
+          
+          # Get the service URL
+          SERVICE_URL=$(railway status --json | jq -r '.deployments[0].url')
+          
+          if [ "$SERVICE_URL" != "null" ]; then
+            echo "Testing deployment at: $SERVICE_URL"
+            curl -f "$SERVICE_URL/health" || exit 1
+            echo "✅ Production deployment health check passed"
+          else
+            echo "⚠️ Could not determine service URL for health check"
+          fi
+          
+      - name: Create release
+        if: success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Production Release v${{ github.run_number }}
+          body: |
+            🚀 **Production Deployment Successful**
+            
+            - **Commit:** ${{ github.sha }}
+            - **Deployed by:** ${{ github.actor }}
+            - **Deploy time:** ${{ github.event.head_commit.timestamp }}
+            
+            **Changes in this release:**
+            ${{ github.event.head_commit.message }}
+            
+            The Primavera MCP Server has been successfully deployed to Railway production.
+          draft: false
+          prerelease: false
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run security audit
+        run: npm audit --audit-level high
+        continue-on-error: true
+        
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified

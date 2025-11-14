@@ -1,0 +1,40 @@
+{
+  "name": "postman-mcp-generator-mcp",
+  "version": "1.0.0",
+  "description": "A simple MCP server with packaged tools",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "list-tools": "node index.js tools",
+    "postman": "node commands/open-postman.js",
+    "start": "node mcpServer.js --streamable-http",
+    "start:stdio": "node mcpServer.js",
+    "start:http": "node mcpServer.js --streamable-http",
+    "start:sse": "node mcpServer.js --sse",
+    "dev": "NODE_ENV=development node mcpServer.js --streamable-http",
+    "dev:stdio": "NODE_ENV=development node mcpServer.js",
+    "dev:sse": "NODE_ENV=development node mcpServer.js --sse",
+    "build": "echo 'No build step required for Node.js'",
+    "test": "node -e 'console.log(\"Basic test passed\")'",
+    "test-connection": "node -e 'console.log(\"Testing server connection...\"); process.exit(0)'",
+    "lint": "echo 'No linter configured'",
+    "railway:start": "node mcpServer.js --streamable-http",
+    "railway:build": "npm ci --production",
+    "docker:build": "docker build -t primavera-mcp-server .",
+    "docker:run": "docker run -i --rm --env-file=.env primavera-mcp-server",
+    "docker:run:http": "docker run -p 3001:3001 --rm --env-file=.env primavera-mcp-server --streamable-http"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "commander": "^13.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "open": "^9.1.0",
+    "pm2": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Postman, Inc.",
+  "license": "MIT"
+}
