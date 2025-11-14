@@ -22,7 +22,10 @@
     "railway:build": "npm ci --production",
     "docker:build": "docker build -t primavera-mcp-server .",
     "docker:run": "docker run -i --rm --env-file=.env primavera-mcp-server",
-    "docker:run:http": "docker run -p 3001:3001 --rm --env-file=.env primavera-mcp-server --streamable-http"
+    "docker:run:http": "docker run -p 3001:3001 --rm --env-file=.env primavera-mcp-server --streamable-http",
+    "copilot:install": "echo 'Copy copilot-extensions.json to your GitHub Copilot Chat extensions directory'",
+    "copilot:validate": "curl -f https://primavera-mcp-server-production.up.railway.app/health || exit 1",
+    "copilot:test": "echo 'Test Primavera tools in GitHub Copilot Chat with: @primavera-data-service sync-metadata'"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.0",

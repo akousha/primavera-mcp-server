@@ -1,0 +1,74 @@
+{
+  "version": "0.0.1",
+  "extensions": [
+    {
+      "name": "primavera-data-service",
+      "displayName": "Primavera Data Service",
+      "description": "Access Oracle Primavera P6 database through 7 specialized tools for project management data analysis and reporting",
+      "publisher": "akousha",
+      "version": "1.0.0",
+      "type": "mcp-server",
+      "server": {
+        "url": "https://primavera-mcp-server-production.up.railway.app/mcp",
+        "transport": "http"
+      },
+      "capabilities": {
+        "tools": [
+          {
+            "name": "sync-metadata",
+            "description": "Synchronize database metadata for all Primavera tables and views"
+          },
+          {
+            "name": "get-tables-metadata", 
+            "description": "Retrieve metadata information about available tables and views"
+          },
+          {
+            "name": "get-columns-metadata-of-table",
+            "description": "Get detailed column information for a specific table"
+          },
+          {
+            "name": "query-tables-data",
+            "description": "Execute SQL queries against Primavera database tables"
+          },
+          {
+            "name": "view-job-status",
+            "description": "Monitor the status of background jobs and operations"
+          },
+          {
+            "name": "view-metadata-seed-status-of-configuration",
+            "description": "Check the progress of metadata seeding operations"
+          },
+          {
+            "name": "download-zip-data",
+            "description": "Download project data exports in ZIP format"
+          }
+        ]
+      },
+      "categories": [
+        "Data Analysis",
+        "Project Management", 
+        "Database Tools",
+        "Oracle Primavera"
+      ],
+      "keywords": [
+        "primavera",
+        "p6",
+        "oracle",
+        "project-management",
+        "database",
+        "sql",
+        "data-analysis",
+        "construction",
+        "scheduling"
+      ],
+      "icon": "database",
+      "authentication": {
+        "type": "none",
+        "note": "Authentication handled by server-side environment variables"
+      },
+      "health": {
+        "endpoint": "https://primavera-mcp-server-production.up.railway.app/health"
+      }
+    }
+  ]
+}

@@ -20,7 +20,7 @@ Warning: if you run with a lower version of Node, `fetch` won't be present. Tool
 
 ### 📥 Installation & Setup
 
-**1. Install dependencies**
+### Install dependencies
 
 Run from your project's root directory:
 
@@ -32,7 +32,7 @@ npm install
 
 In the `.env` file, you'll see environment variable placeholders, one for each workspace that the selected tools are from. For example, if you selected requests from 2 workspaces, e.g. Acme and Widgets, you'll see two placeholders:
 
-```
+```env
 ACME_API_KEY=
 WIDGETS_API_KEY=
 ```
@@ -54,7 +54,7 @@ The Postman Desktop Application is the easiest way to run and test MCP servers. 
 
 **Step 1**: Download the latest Postman Desktop Application from [https://www.postman.com/downloads/](https://www.postman.com/downloads/).
 
-**Step 2**: Read out the documentation article [here](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/create/) and see how to create an MCP request inside the Postman app.
+**Step 2**: Read the [MCP requests documentation](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/create/) and see how to create an MCP request inside the Postman app.
 
 **Step 3**: Set the type of the MCP request to `STDIO` and set the command to `node </absolute/path/to/mcpServer.js>`. If you have issues with using only `node` (e.g. an old version is used), supply an absolute path instead to a node version 18+. You can get the full path to node by running:
 
@@ -105,13 +105,13 @@ Restart Claude Desktop to activate this change. Make sure the new MCP is turned 
 
 For production deployments, you can use Docker:
 
-**1. Build Docker image**
+### Build Docker image
 
 ```sh
 docker build -t <your_server_name> .
 ```
 
-**2. Claude Desktop Integration**
+### Claude Desktop Integration
 
 Add Docker server configuration to Claude Desktop (Settings → Developers → Edit Config):
 
@@ -168,7 +168,7 @@ node mcpServer.js
 
 ## 🛠️ Additional CLI commands
 
-#### List tools
+### List tools
 
 List descriptions and parameters from all generated tools with:
 
@@ -178,7 +178,7 @@ node index.js tools
 
 Example:
 
-```
+```text
 Available Tools:
 
 Workspace: acme-workspace
@@ -205,3 +205,44 @@ Extend your MCP server with more tools easily:
 Visit the [Postman MCP Generator](https://postman.com/explore/mcp-generator) page for updates and new capabilities.
 
 Join the `#mcp-lab` channel in the [Postman Discord](https://discord.gg/PQAWcPkprM) to share what you've built and get help.
+
+## 🤖 GitHub Copilot Chat Integration
+
+This MCP server is also configured for GitHub Copilot Chat integration, allowing you to use all 7 Primavera Data Service tools directly within GitHub Copilot Chat.
+
+### Quick Setup for GitHub Copilot Chat
+
+1. **Copy the extension configuration**:
+
+   ```sh
+   npm run copilot:install
+   ```
+
+2. **Test the connection**:
+
+   ```sh
+   npm run copilot:validate
+   ```
+
+3. **Try it in GitHub Copilot Chat**:
+
+   ```sh
+   npm run copilot:test
+   ```
+
+### Using Primavera Tools in Copilot Chat
+
+Once configured, you can use commands like:
+
+- `@primavera-data-service sync-metadata` - Sync database metadata
+- `@primavera-data-service query-tables-data` - Execute SQL queries on Primavera data
+- `@primavera-data-service get-tables-metadata` - Get available table information
+
+### Production Server
+
+The server is deployed and running at:
+
+- **Health**: <https://primavera-mcp-server-production.up.railway.app/health>
+- **MCP Endpoint**: <https://primavera-mcp-server-production.up.railway.app/mcp>
+
+For complete GitHub Copilot Chat integration documentation, see [`docs/GITHUB_COPILOT_INTEGRATION.md`](docs/GITHUB_COPILOT_INTEGRATION.md).
