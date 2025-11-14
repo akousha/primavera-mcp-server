@@ -138,10 +138,12 @@ async function setupStreamableHttp(tools) {
   });
 
   const port = process.env.PORT || 3001;
+  console.log(`[Server] Attempting to bind to port ${port} on 0.0.0.0`);
   app.listen(port, '0.0.0.0', () => {
     console.log(
       `[Streamable HTTP Server] running at http://0.0.0.0:${port}/mcp`
     );
+    console.log(`[Health Check] available at http://0.0.0.0:${port}/health`);
   });
 }
 
