@@ -37,4 +37,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # Expose port (only used in HTTP/SSE modes)
 EXPOSE 3001
 
-ENTRYPOINT ["node", "mcpServer.js"]
+ENTRYPOINT ["node", "mcpServer.js", "--streamable-http"]
