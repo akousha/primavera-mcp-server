@@ -137,7 +137,7 @@ async function setupStreamableHttp(tools) {
     }
   });
 
-  const port = process.env.PORT || 3001;
+  const port = 3001; // Force port 3001 for Railway
   console.log(`[Server] Attempting to bind to port ${port} on 0.0.0.0`);
   app.listen(port, '0.0.0.0', () => {
     console.log(
@@ -204,7 +204,7 @@ async function setupSSE(tools) {
     }
   });
 
-  const port = process.env.PORT || 3001;
+  const port = 3001; // Force port 3001 for Railway
   app.listen(port, '0.0.0.0', () => {
     console.log(`[SSE Server] is running:`);
     console.log(`  SSE stream:    http://0.0.0.0:${port}/sse`);
