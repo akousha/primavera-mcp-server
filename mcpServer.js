@@ -138,9 +138,9 @@ async function setupStreamableHttp(tools) {
   });
 
   const port = process.env.PORT || 3001;
-  app.listen(port, () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log(
-      `[Streamable HTTP Server] running at http://127.0.0.1:${port}/mcp`
+      `[Streamable HTTP Server] running at http://0.0.0.0:${port}/mcp`
     );
   });
 }
@@ -203,10 +203,10 @@ async function setupSSE(tools) {
   });
 
   const port = process.env.PORT || 3001;
-  app.listen(port, () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log(`[SSE Server] is running:`);
-    console.log(`  SSE stream:    http://127.0.0.1:${port}/sse`);
-    console.log(`  Message input: http://127.0.0.1:${port}/messages`);
+    console.log(`  SSE stream:    http://0.0.0.0:${port}/sse`);
+    console.log(`  Message input: http://0.0.0.0:${port}/messages`);
   });
 }
 
