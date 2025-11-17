@@ -63,6 +63,9 @@ const apiTool = {
         properties: {
           tables: {
             type: 'array',
+            items: {
+              type: 'object'
+            },
             description: 'The tables to query, including their names, columns, and conditions.'
           },
           binds: {
